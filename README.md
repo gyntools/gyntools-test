@@ -32,5 +32,5 @@ Example:
 ### Unit tests
 
 Usage:
-Create a new unit tests class extending [](src/main/java/com/github/gyntools/test/AbstractBaseUnitTest.java)
+Create a new unit tests class extending [AbstractBaseUnitTest](src/main/java/com/github/gyntools/test/AbstractBaseUnitTest.java)
 
