@@ -1,4 +1,4 @@
-package org.gyntools.test;
+package com.github.gyntools.test;
 
 import org.hibernate.FlushMode;
 import org.hibernate.Session;
