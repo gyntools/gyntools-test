@@ -8,6 +8,32 @@
     <artifactId>gyntools-test</artifactId>
     <version>0.1.0</version>
 
+    <name>gyntools-test</name>
+    <description>Setup integration and unit tests with ease</description>
+    <url>https://github.com/gyntools/gyntools-test.git</url>
+    <licenses>
+        <license>
+            <name>MIT</name>
+            <distribution>MIT</distribution>
+            <url>https://raw.githubusercontent.com/gyntools/gyntools-test/master/LICENSE</url>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>https://github.com/gyntools/gyntools-test.git</url>
+    </scm>
+
+    <developers>
+        <developer>
+            <id>rafaelszp</id>
+            <email>rafaelszp@users.noreply.github.com</email>
+            <name>Rafael Pereira</name>
+            <organization>GynTools</organization>
+            <organizationUrl>https://github.com/gyntools/</organizationUrl>
+            <timezone>BRT</timezone>
+        </developer>
+    </developers>
+
 
     <properties>
         <testng.version>6.9.10</testng.version>
@@ -93,6 +119,20 @@
                         <id>attach-javadocs</id>
                         <goals>
                             <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
                         </goals>
                     </execution>
                 </executions>
