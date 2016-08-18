@@ -1,7 +1,7 @@
-package it.org.gyntools.test;
+package it.com.github.gyntools.test;
 
-import org.gyntools.test.DatabaseIntegrationTesterBuilder;
-import org.gyntools.test.AbstractDatabaseIntegrationTester;
+import com.github.gyntools.test.DatabaseIntegrationTesterBuilder;
+import com.github.gyntools.test.AbstractDatabaseIntegrationTester;
 import org.hibernate.Session;
 import org.testng.annotations.Test;
 

@@ -1,4 +1,4 @@
-package org.gyntools.test;
+package com.github.gyntools.test;
 
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;

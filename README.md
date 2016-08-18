@@ -9,7 +9,7 @@ Setup tests made easy
 
 ### Integration Tests
 
-1) Create a new integration tests class extending [AbstractDatabaseIntegrationTester](src/main/java/org/gyntools/test/AbstractDatabaseIntegrationTester.java)
+1) Create a new integration tests class extending [AbstractDatabaseIntegrationTester](src/main/java/com/github/gyntools/test/AbstractDatabaseIntegrationTester.java)
 
 Example: 
 
@@ -32,5 +32,5 @@ Example:
 ### Unit tests
 
 Usage:
-Create a new unit tests class extending [](src/main/java/org/gyntools/test/AbstractBaseUnitTest.java)
+Create a new unit tests class extending [](src/main/java/com/github/gyntools/test/AbstractBaseUnitTest.java)
 
