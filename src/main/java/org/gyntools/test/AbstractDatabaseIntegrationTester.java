@@ -1,6 +1,7 @@
 package org.gyntools.test;
 
 import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterSuite;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -11,7 +12,7 @@ import java.util.logging.Logger;
 /**
  * Created by rafael on 8/15/16.
  */
-public abstract class AbstractDatabaseIntegrationTestClass {
+public abstract class AbstractDatabaseIntegrationTester {
 
     private EntityManagerFactory entityManagerFactory;
     private EntityManager entityManager;
@@ -42,7 +43,7 @@ public abstract class AbstractDatabaseIntegrationTestClass {
         }
     }
 
-    @AfterClass
+    @AfterSuite
     public void afterClass(){
         closeJPA();
     }

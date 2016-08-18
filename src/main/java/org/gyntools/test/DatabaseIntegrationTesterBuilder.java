@@ -1,16 +1,14 @@
 package org.gyntools.test;
 
+import org.hibernate.FlushMode;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.jdbc.Work;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,34 +16,41 @@ import java.util.logging.Logger;
 /**
  * Created by rafael on 8/15/16.
  */
-public class DatabaseIntegrationTestBuilder<T extends AbstractDatabaseIntegrationTestClass> {
+public class DatabaseIntegrationTesterBuilder<T extends AbstractDatabaseIntegrationTester> {
 
-    private DatabaseIntegrationTestBuilder builder;
+    private DatabaseIntegrationTesterBuilder builder;
     private T integrationClass;
     protected Logger logger = Logger.getLogger(this.getClass().getName());
 
 
-    private DatabaseIntegrationTestBuilder(){
-
+    private DatabaseIntegrationTesterBuilder(){
+        Logger.getLogger("org.hibernate.level").setLevel(Level.FINEST);
+        Logger.getLogger("org.hibernate.type").setLevel(Level.FINEST);
     }
 
-    public static <T extends AbstractDatabaseIntegrationTestClass> DatabaseIntegrationTestBuilder of(T integration) {
-        DatabaseIntegrationTestBuilder<T> builder  = new DatabaseIntegrationTestBuilder<T>();
+    public static <T extends AbstractDatabaseIntegrationTester> DatabaseIntegrationTesterBuilder of(T integration) {
+        DatabaseIntegrationTesterBuilder<T> builder  = new DatabaseIntegrationTesterBuilder<T>();
         builder.builder = builder;
         builder.integrationClass =integration;
         return builder;
     }
 
-    public DatabaseIntegrationTestBuilder withDB(String persistenceUnitName) {
+    public DatabaseIntegrationTesterBuilder withDB(String persistenceUnitName) {
         this.integrationClass.buildEntityManager(persistenceUnitName);
         return this;
     }
 
-    public DatabaseIntegrationTestBuilder addSQLScriptFile(String path) {
+    public DatabaseIntegrationTesterBuilder addSQLScriptFile(String path) {
 
         logger.info("Executing SQL file "+path);
-        Session session = (Session) this.integrationClass.getEntityManager().getDelegate();
+        Session session = newSession();
+        logger.info(session.toString());
+        session.setFlushMode(FlushMode.COMMIT);
+        logger.fine("Transaction status before open:"+session.getTransaction().getStatus());
+
         Transaction tx = session.beginTransaction();
+        logger.fine("Transaction status on open:"+session.getTransaction().getStatus());
+
         try {
 
             if(path!=null && path.length()>0){
@@ -60,15 +65,10 @@ public class DatabaseIntegrationTestBuilder<T extends AbstractDatabaseIntegratio
                     sb.append(str + "\n ");
                 }
 
-                session.doWork(new Work() {
-                    public void execute(Connection connection) throws SQLException {
-                        PreparedStatement ps = connection.prepareStatement(sb.toString());
-                        ps.executeBatch();
-                        ps.close();
-                    }
-                });
-
+                session.createSQLQuery(sb.toString()).executeUpdate();
                 tx.commit();
+
+                logger.fine("Transaction status after execution:"+session.getTransaction().getStatus());
                 in.close();
             }else{
                 tx.rollback();
@@ -82,14 +82,14 @@ public class DatabaseIntegrationTestBuilder<T extends AbstractDatabaseIntegratio
         return this;
     }
 
-    public DatabaseIntegrationTestBuilder addProperties(Properties props) {
+    public DatabaseIntegrationTesterBuilder addProperties(Properties props) {
         System.getProperties().entrySet().forEach(entry -> props.put(entry.getKey(),entry.getValue()));
         System.setProperties(props);
         return this;
     }
 
 
-    public DatabaseIntegrationTestBuilder addProperties(String path) {
+    public DatabaseIntegrationTesterBuilder addProperties(String path) {
         try {
             URL resource = this.getClass().getClassLoader().getResource(path);
             Properties props = new Properties();
@@ -99,5 +99,11 @@ public class DatabaseIntegrationTestBuilder<T extends AbstractDatabaseIntegratio
             logger.log(Level.SEVERE,"ERROR on executing loding file "+path,e);
         }
         return this;
+    }
+
+    public Session newSession(){
+        Session session = this.integrationClass.getEntityManager().unwrap(Session.class);
+        SessionFactory sessionFactory = session.getSessionFactory();
+        return sessionFactory.openSession();
     }
 }
